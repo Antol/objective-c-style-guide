@@ -1,8 +1,4 @@
-# NYTimes Objective-C Style Guide
-
-This style guide outlines the coding conventions of the iOS team at The New York Times. We welcome your feedback in [issues](https://github.com/NYTimes/objetive-c-style-guide/issues), [pull requests](https://github.com/NYTimes/objetive-c-style-guide/pulls) and [tweets](https://twitter.com/nytimesmobile). Also, [we're hiring](http://jobs.nytco.com/job/New-York-iOS-Developer-Job-NY/2572221/).
-
-Thanks to all of [our contributors](https://github.com/NYTimes/objective-c-style-guide/contributors).
+# easyJet Objective-C Style Guide
 
 ## Introduction
 
@@ -19,42 +15,44 @@ Here are some of the documents from Apple that informed the style guide. If some
 * [Spacing](#spacing)
 * [Conditionals](#conditionals)
   * [Ternary Operator](#ternary-operator)
-* [Error handling](#error-handling)
 * [Methods](#methods)
 * [Variables](#variables)
 * [Naming](#naming)
 * [Comments](#comments)
-* [Init & Dealloc](#init-and-dealloc)
+* [Init](#init)
 * [Literals](#literals)
 * [CGRect Functions](#cgrect-functions)
 * [Constants](#constants)
 * [Enumerated Types](#enumerated-types)
 * [Bitmasks](#bitmasks)
 * [Private Properties](#private-properties)
-* [Image Naming](#image-naming)
 * [Booleans](#booleans)
 * [Singletons](#singletons)
 * [Xcode Project](#xcode-project)
 
 ## Dot-Notation Syntax
 
-Dot-notation should **always** be used for accessing and mutating properties. Bracket notation is preferred in all other instances.
+Dot-notation should **always** be used for accessing and mutating properties. Bracket notation is preferred in all other instances. Calling of getter methods without parameters also should be done through dot notation. If method had side effects it is not a getter method
 
 **For example:**
 ```objc
 view.backgroundColor = [UIColor orangeColor];
 [UIApplication sharedApplication].delegate;
+object.getSomeStuff;
+[object changeState];
 ```
 
 **Not:**
 ```objc
 [view setBackgroundColor:[UIColor orangeColor]];
 UIApplication.sharedApplication.delegate;
+[object getSomeStuff];
+object.changeSate;
 ```
 
 ## Spacing
 
-* Indent using 4 spaces. Never indent with tabs. Be sure to set this preference in Xcode.
+* Indent using 2 spaces (It is unusual but for some reason it is used in easyJet project). Never indent with tabs. Be sure to set this preference in Xcode.
 * Method braces and other braces (`if`/`else`/`switch`/`while` etc.) always open on the same line as the statement but close on a new line.
 
 **For example:**
@@ -67,7 +65,7 @@ else {
 }
 ```
 * There should be exactly one blank line between methods to aid in visual clarity and organization. Whitespace within methods should separate functionality, but often there should probably be new methods.
-* `@synthesize` and `@dynamic` should each be declared on new lines in the implementation.
+* `@class`, `@protocol`, `@synthesize` and `@dynamic` should each be declared on new lines in the implementation.
 
 ## Conditionals
 
@@ -94,40 +92,17 @@ if (!error) return success;
 
 ### Ternary Operator
 
-The Ternary operator, ? , should only be used when it increases clarity or code neatness. A single condition is usually all that should be evaluated. Evaluating multiple conditions is usually more understandable as an if statement, or refactored into instance variables.
+The Ternary operator, ? , should only be used when it increases clarity or code neatness. A single condition is usually all that should be evaluated. Evaluating multiple conditions is usually more understandable as an if statement, or refactored into instance variables. The condition in Ternary operator should be sorounded with brackets
 
 **For example:**
 ```objc
-result = a > b ? x : y;
+result = (a > b)? x : y;
 ```
 
 **Not:**
 ```objc
 result = a > b ? x = c > d ? c : d : y;
 ```
-
-## Error handling
-
-When methods return an error parameter by reference, switch on the returned value, not the error variable.
-
-**For example:**
-```objc
-NSError *error;
-if (![self trySomethingWithError:&error]) {
-    // Handle Error
-}
-```
-
-**Not:**
-```objc
-NSError *error;
-[self trySomethingWithError:&error];
-if (error) {
-    // Handle Error
-}
-```
-
-Some of Apple’s APIs write garbage values to the error parameter (if non-NULL) in successful cases, so switching on the error can cause false negatives (and subsequently crash).
 
 ## Methods
 
@@ -143,14 +118,14 @@ Variables should be named as descriptively as possible. Single letter variable n
 
 Asterisks indicating pointers belong with the variable, e.g., `NSString *text` not `NSString* text` or `NSString * text`, except in the case of constants.
 
-Property definitions should be used in place of naked instance variables whenever possible. Direct instance variable access should be avoided except in initializer methods (`init`, `initWithCoder:`, etc…), `dealloc` methods and within custom setters and getters. For more information on using Accessor Methods in Initializer Methods and dealloc, see [here](https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/MemoryMgmt/Articles/mmPractical.html#//apple_ref/doc/uid/TP40004447-SW6).
+Property definitions should be used in place of naked instance variables. Direct instance variable access should be avoided except in initializer methods (`init`, `initWithCoder:`, etc…), `dealloc` methods and within custom setters and getters. For more information on using Accessor Methods in Initializer Methods and dealloc, see [here](https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/MemoryMgmt/Articles/mmPractical.html#//apple_ref/doc/uid/TP40004447-SW6).
 
 **For example:**
 
 ```objc
 @interface NYTSection: NSObject
 
-@property (nonatomic) NSString *headline;
+@property (nonatomic, copy) NSString *headline;
 
 @end
 ```
@@ -185,12 +160,12 @@ UIButton *settingsButton;
 UIButton *setBut;
 ```
 
-A three letter prefix (e.g. `NYT`) should always be used for class names and constants, however may be omitted for Core Data entity names. Constants should be camel-case with all words capitalized and prefixed by the related class name for clarity.
+A three letter prefix (e.g. `NYT`) should always be used for class names and constants, however may be omitted for Core Data entity names. Constants should be camel-case with all words capitalized and prefixed by the related class name and 'k' letter for clarity.
 
 **For example:**
 
 ```objc
-static const NSTimeInterval NYTArticleViewControllerNavigationFadeAnimationDuration = 0.3;
+static const NSTimeInterval kNYTArticleViewControllerNavigationFadeAnimationDuration = 0.3;
 ```
 
 **Not:**
@@ -221,10 +196,9 @@ When they are needed, comments should be used to explain **why** a particular pi
 
 Block comments should generally be avoided, as code should be as self-documenting as possible, with only the need for intermittent, few-line explanations. This does not apply to those comments used to generate documentation.
 
-## init and dealloc
+## init
 
-`dealloc` methods should be placed at the top of the implementation, directly after the `@synthesize` and `@dynamic` statements. `init` should be placed directly below the `dealloc` methods of any class.
-
+`init` methods should be placed at the top of the implementation.
 `init` methods should be structured like this:
 
 ```objc
@@ -233,7 +207,6 @@ Block comments should generally be avoided, as code should be as self-documentin
     if (self) {
         // Custom initialization
     }
-
     return self;
 }
 ```
@@ -295,9 +268,9 @@ Constants are preferred over in-line string literals or numbers, as they allow f
 **For example:**
 
 ```objc
-static NSString * const NYTAboutViewControllerCompanyName = @"The New York Times Company";
+static NSString * const kNYTAboutViewControllerCompanyName = @"The New York Times Company";
 
-static const CGFloat NYTImageThumbnailHeight = 50.0;
+static const CGFloat kNYTImageThumbnailHeight = 50.0;
 ```
 
 **Not:**
@@ -338,30 +311,17 @@ typedef NS_OPTIONS(NSUInteger, NYTAdCategory) {
 
 ## Private Properties
 
-Private properties should be declared in class extensions (anonymous categories) in the implementation file of a class. Named categories (such as `NYTPrivate` or `private`) should never be used unless extending another class.
+Private properties should be declared in class extensions (anonymous categories) in the implementation file of a class. Named categories (such as `private`) should never be used unless extending another class.
 
 **For example:**
 
 ```objc
 @interface NYTAdvertisement ()
-
 @property (nonatomic, strong) GADBannerView *googleAdView;
 @property (nonatomic, strong) ADBannerView *iAdView;
 @property (nonatomic, strong) UIWebView *adXWebView;
-
 @end
 ```
-
-## Image Naming
-
-Image names should be named consistently to preserve organization and developer sanity. They should be named as one camel case string with a description of their purpose, followed by the un-prefixed name of the class or property they are customizing (if there is one), followed by a further description of color and/or placement, and finally their state.
-
-**For example:**
-
-* `RefreshBarButtonItem` / `RefreshBarButtonItem@2x` and `RefreshBarButtonItemSelected` / `RefreshBarButtonItemSelected@2x`
-* `ArticleNavigationBarWhite` / `ArticleNavigationBarWhite@2x` and `ArticleNavigationBarBlackSelected` / `ArticleNavigationBarBlackSelected@2x`.
-
-Images that are used for a similar purpose should be grouped in respective groups in an Images folder.
 
 ## Booleans
 
@@ -399,35 +359,13 @@ if (isAwesome == YES) // Never do this.
 if ([someObject boolValue] == NO)
 ```
 
------
-
-If the name of a `BOOL` property is expressed as an adjective, the property can omit the “is” prefix but specifies the conventional name for the get accessor, for example:
-
-```objc
-@property (assign, getter=isEditable) BOOL editable;
-```
-Text and example taken from the [Cocoa Naming Guidelines](https://developer.apple.com/library/mac/#documentation/Cocoa/Conceptual/CodingGuidelines/Articles/NamingIvarsAndTypes.html#//apple_ref/doc/uid/20001284-BAJGIIJE).
-
 ## Singletons
 
-Singleton objects should use a thread-safe pattern for creating their shared instance.
-```objc
-+ (instancetype)sharedInstance {
-   static id sharedInstance = nil;
-
-   static dispatch_once_t onceToken;
-   dispatch_once(&onceToken, ^{
-      sharedInstance = [[self alloc] init];
-   });
-
-   return sharedInstance;
-}
-```
-This will prevent [possible and sometimes prolific crashes](http://cocoasamurai.blogspot.com/2011/04/singletons-your-doing-them-wrong.html).
+Direct usege of Singletons should be avoided! Use Typhoone injection to property in this case. If it is not possible for some reason, should be used Typhoon assembly directly.
 
 ## Xcode project
 
-The physical files should be kept in sync with the Xcode project files in order to avoid file sprawl. Any Xcode groups created should be reflected by folders in the filesystem. Code should be grouped not only by type, but also by feature for greater clarity.
+Code should be grouped not only by type, but also by feature for greater clarity.
 
 When possible, always turn on "Treat Warnings as Errors" in the target's Build Settings and enable as many [additional warnings](http://boredzo.org/blog/archives/2009-11-07/warnings) as possible. If you need to ignore a specific warning, use [Clang's pragma feature](http://clang.llvm.org/docs/UsersManual.html#controlling-diagnostics-via-pragmas).
 
