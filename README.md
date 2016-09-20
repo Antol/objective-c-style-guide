@@ -1,4 +1,4 @@
-# easyJet Objective-C Style Guide
+# Objective-C Style Guide
 
 ## Introduction
 
@@ -66,6 +66,60 @@ else {
 ```
 * There should be exactly one blank line between methods to aid in visual clarity and organization. Whitespace within methods should separate functionality, but often there should probably be new methods.
 * `@class`, `@protocol`, `@synthesize` and `@dynamic` should each be declared on new lines in the implementation.
+
+## Word wrapping
+
+Every code line should not be longer than 140 signs. If method name is too long it should be broken in few lines. In this case every parameter should be on separate line. If condition is too long it also should be broken in few lines in places after topmost logical operators and braces should be placed on next line. Or even better - condition should be assigned to variable.
+
+**For example:**
+```objc
+APVeryMeaningfulClassName *variable = [APVeryMeaningfulClassName objectWithParameter:foo 
+                                                                   longlongParameter:bar
+                                                                               short:buz
+                                                   veryVeryVeryVeryLongParameterName:longParamName];
+
+BOOL isChecked = longLongLongLongLongLongLongCondition && 
+                 bigBigBigVariableName > 1234567890 ||
+                 variable.someProperty.something.isAvailable &&
+                 [veryVeryVeryVeryLongParameterName isEqual:veryVeryVeryVeryLongParameterName];
+if (isChecked) {
+    //Do something
+}
+
+or
+
+if (longLongLongLongLongLongLongCondition && 
+    bigBigBigVariableName > 1234567890 ||
+    variable.someProperty.something.isAvailable &&
+    [veryVeryVeryVeryLongParameterName isEqual:veryVeryVeryVeryLongParameterName])
+{
+    //Do something
+}
+
+```
+
+**Not:**
+```objc
+APVeryMeaningfulClassName *variable = [APVeryMeaningfulClassName objectWithParameter:foo longlongParameter:bar short:buz veryVeryVeryVeryLongParameterName:veryVeryVeryVeryLongParameterName];
+
+APVeryMeaningfulClassName *variable = [APVeryMeaningfulClassName objectWithParameter:foo longlongParameter:bar short:buz
+                                                   veryVeryVeryVeryLongParameterName:longParamName];
+
+if (longLongLongLongLongLongLongCondition &&  bigBigBigVariableName > 1234567890 || variable.someProperty.something.isAvailable && [veryVeryVeryVeryLongParameterName isEqual:veryVeryVeryVeryLongParameterName]) {
+    //Do something
+}
+
+if (longLongLongLongLongLongLongCondition && 
+    bigBigBigVariableName > 1234567890 ||
+    variable.someProperty.something.isAvailable &&
+    [veryVeryVeryVeryLongParameterName isEqual:veryVeryVeryVeryLongParameterName]) {
+    THisIsAction *butYouCanThink = [ThatItIsStill condition];
+}
+
+```
+
+To siply check length of strings it is recommended to turn on "Page guide" in Xcode (Xcode -> Preferences -> Text Editing -> Editing -> Page guide at column: (140))
+
 
 ## Conditionals
 
