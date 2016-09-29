@@ -1,5 +1,164 @@
 # Objective-C Style Guide
 
+## TL;DR
+
+**For example: h-file**
+```objc
+//
+//  AACheckboxView.h
+//  amazingProject
+//
+//  Created by Anatoliy Peshkov on 15/08/2016.
+//  Copyright © 2016 SomeCompany. All rights reserved.
+//
+
+#import "PMNibLinkableView.h"
+@class AACheckboxView;
+@class AASomeObject;
+@protocol SomeProtocol;
+
+FOUNDATION_EXPORT NSString *const kAACheckboxViewStringExternConstant;
+
+@protocol AACheckboxViewDelegate <NSObject>
+- (void)somethingVeryImportantHappenedInCheckboxView:(AACheckboxView *)checkboxView 
+@optional
+- (void)checkboxView:(AACheckboxView *)checkboxView userDidChangeState:(BOOL)isSelected;
+@end
+
+@interface AACheckboxView : PMNibLinkableView
+@property (nonatomic, weak) id<AACheckboxViewDelegate> delegate;
+@property (nonatomic, assign, readonly) BOOL isSelected;
+- (void)select:(void (^)(NSError *error))completion;
+- (void)deselect;
+@end
+```
+
+**For example: m-file**
+```objc
+//
+//  AACheckboxView.m
+//  amazingProject
+//
+//  Created by Anatoliy Peshkov on 15/08/2016.
+//  Copyright © 2016 SomeCompany. All rights reserved.
+//
+
+#import "AACheckboxView.h"
+#import "AAActionButtonCard.h"
+#import "AACommonUtils.h"
+#import "AANetworkServicesAssembly.h"
+#import <Fabric/Fabric.h>
+#import <Crashlytics/Crashlytics.h>
+#import "AASomeObject.h"
+#import "SomeProtocol.h"
+
+NSString *const kAACheckboxViewStringExternConstant = @"SomeStringValue";
+static NSString *const kAACheckboxViewNotificationKey = @"MyThingNotificationKey";
+static const NSTimeInterval kAACheckboxViewFadeAnimationDuration = 0.3;
+
+
+typedef NS_ENUM(NSInteger, AARequestState) {
+    AARequestStateInactive,
+    AARequestStateLoading
+};
+
+
+@interface AACheckboxView () <UITableViewDelegate, UITableViewDatasource, AAMagicProtocol1, AAMagicProtocol2,
+                              AAMagicProtocol3, AAMagicProtocol4, AAMagicProtocol5>
+@property (nonatomic, weak) IBOutlet AALocalizedLabel *titleLabel;
+@property (nonatomic, weak) IBOutlet UIImageView *tickImageView;
+
+@property (nonatomic, assign) BOOL isSelected;
+@property (nonatomic, strong) NSNumber *tempVariable;
+@property (nonatomic, copy)   NSString *headline;
+@end
+
+
+@implementation EJCheckboxView
+
+- (instancetype)init {
+  self = [super init];
+  if (self) {
+    self.tempVariable = [AAVeryMeaningfulClassName objectWithParameter:foo 
+                                                     longlongParameter:bar
+                                                                 short:buz
+                                     veryVeryVeryVeryLongParameterName:longParamName];
+  }
+  else {
+    NSAssert([UIApplication sharedApplication].delegate, @"Some debug message which will not be visible fo user");
+  }
+  return self;
+}
+
+#pragma mark - Actions
+
+- (IBAction)actionButtonTapped:(id)sender {
+  self.backgroundColor = [UIColor orangeColor];
+  [UIApplication sharedApplication].delegate = self;
+  
+  id tempVar = (a > b)? object.getSomeStuff : @13.5;
+  [self changeState];
+
+  NSArray *assemblies = @[@"EJApplicationAssembly",
+                          @"EJMessageInboxAssembly",
+                          @"EJContentManagerAssembly",
+                          @"EJDeepLinkAssembly",
+                          @"EJCoreAssembly",
+                          @"EJConciergeLiveAssembly",
+                          @"EJAnalyticsAssembly",
+                          @"EJForceUpgradeAssembly",
+                          @"EJSSLCheckerAssembly",
+                          @"EJNetworkServicesAssembly",
+                          @"EJApplePayAssembly"];
+}
+
+#pragma mark - UITableViewDatasource
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+  return self.passengers.count;
+}
+
+#pragma mark - Private
+
+- (void)changeState {
+  if (!self.headline &&
+      longLongLongLongLongLongLongCondition && 
+      bigBigBigVariableName > 1234567890 ||
+      variable.someProperty.something.isAvailable &&
+      [veryVeryVeryVeryLongParameterName isEqual:veryVeryVeryVeryLongParameterName])
+  {
+      self.tempVariable = @YES;
+  }
+
+  CGRect frame = self.view.frame;
+
+  CGFloat x = CGRectGetMinX(frame);
+  CGFloat y = CGRectGetMinY(frame);
+  CGFloat width = CGRectGetWidth(frame);
+  CGFloat height = CGRectGetHeight(frame);
+}
+
+- (void)fetchSomeData:(void(^)(BOOL success))compleition {
+  @weakify(self)
+  [self.restClient doGET:@"triam/param" completion:^(id result, NSError *error) {
+    @strongify(self)
+    [result doSomeThing];
+
+    [self.restClient
+     doGET:@"triam/param"
+     params:@{@"long_long_long_long_json_key": @1234567890123456}
+     headers:[someVeryUsefulObject generateHeadersForGetrequest]
+     completion:^(id result, NSError *error) {
+       @strongify(self)
+       self.headline = result;
+       [result doSomeThing];
+     }];
+  }];
+}
+
+@end
+```
+
 ## Introduction
 
 Here are some of the documents from Apple that informed the style guide. If something isn't mentioned here, it's probably covered in great detail in one of these:
