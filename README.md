@@ -166,6 +166,56 @@ In method signatures, there should be a space after the scope (-/+ symbol). Ther
 ```objc
 - (void)setExampleText:(NSString *)text image:(UIImage *)image;
 ```
+
+If method has block as only parameter the name of method should not have any adition like 'completionBlock'. Parameter should be named 'compleition'.
+**For example:**
+```objc
+- (void)fetchSomeData:(void(^)(BOOL success))compleition;
+```
+
+**Not:**
+```objc
+- (void)fetchSomeDataWithCompletionBlock:(void(^)(BOOL success))compleitionBlock;
+```
+
+Calling of methods with block as parameter should give the impression of single indent. If method or parameters is too long to fit in 140 signs it should be wrapped as shown in example - every parameter on new line with 1 space intend, block intended usually from last parameter position.
+
+**For example:**
+```objc
+[self.restClient doGET:@"triam/param" completion:^(id result, NSError *error) {
+  [result doSomeThing];
+}];
+
+[self.restClient
+ doGET:@"triam/param"
+ params:@{@"long_long_long_long_json_key": @1234567890123456}
+ headers:[someVeryUsefulObject generateHeadersForGetrequest]
+ completion:^(id result, NSError *error) {
+   [result doSomeThing];
+ }];
+```
+
+**Not:**
+```objc
+[self.restClient doGET:@"triam/param" params:@{@"long_long_long_long_json_key": @1234567890123456} headers:[someVeryUsefulObject generateHeadersForGetrequest] completion:^(id result, NSError *error) {
+  [result doSomeThing];
+}];
+
+[self.restClient doGET:@"triam/param" 
+                params:@{@"long_long_long_long_json_key": @1234567890123456} 
+               headers:[someVeryUsefulObject generateHeadersForGetrequest] 
+            completion:^(id result, NSError *error) {
+  [result doSomeThing];
+}];
+
+[self.restClient doGET:@"triam/param" 
+                params:@{@"long_long_long_long_json_key": @1234567890123456} 
+               headers:[someVeryUsefulObject generateHeadersForGetrequest] 
+            completion:^(id result, NSError *error) {
+              [result doSomeThing];
+            }];
+```
+
 ## Variables
 
 Variables should be named as descriptively as possible. Single letter variable names should be avoided except in `for()` loops.
