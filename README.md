@@ -211,7 +211,7 @@ object.changeSate;
 
 ## Spacing
 
-* Indent using 4 spaces (It is unusual but for some reason it is used in easyJet project). Never indent with tabs. Be sure to set this preference in Xcode.
+* Indent using 4 spaces. Never indent with tabs! Be sure to set this preference in Xcode.
 * Method braces and other braces (`if`/`else`/`switch`/`while` etc.) always open on the same line as the statement but close on a new line.
 
 **For example:**
