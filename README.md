@@ -74,7 +74,7 @@ typedef NS_ENUM(NSInteger, AARequestState) {
 @end
 
 
-@implementation EJCheckboxView
+@implementation AACheckboxView
 
 - (instancetype)init {
     self = [super init];
